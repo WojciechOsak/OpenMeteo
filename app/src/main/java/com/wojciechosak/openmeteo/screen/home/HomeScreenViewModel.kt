@@ -10,7 +10,7 @@ class HomeScreenViewModel(
 ) : ViewModel() {
 
     data class ViewState(
-        val currentLocationCity: String,
+        val currentLocationCity: String = "Warsaw",
         val currentLocationCountry: String,
         val temperatureCelsius: Float,
         val conditions: String,

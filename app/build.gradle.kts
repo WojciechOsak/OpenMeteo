@@ -45,6 +45,10 @@ dependencies {
     implementation(libs.koin.compose.viewmodel.navigation)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+    implementation(libs.play.services.location)
+    implementation(libs.accompanist.permissions)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

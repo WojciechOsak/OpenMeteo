@@ -1,5 +1,9 @@
 package com.wojciechosak.openmeteo.navigation
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
@@ -10,15 +14,20 @@ import androidx.navigation.navArgument
 import com.wojciechosak.openmeteo.screen.Screen
 import com.wojciechosak.openmeteo.screen.details.DetailScreen
 import com.wojciechosak.openmeteo.screen.home.HomeScreen
+import com.wojciechosak.openmeteo.screen.permission.PermissionScreen
 
 @Composable
-fun NavigationStack(modifier: Modifier) {
+fun NavigationStack() {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route,
-        modifier = modifier) {
+        startDestination = Screen.PermissionScreen.route,
+        modifier = Modifier.padding(WindowInsets.statusBars.asPaddingValues())
+    ) {
+        composable(route = Screen.PermissionScreen.route) {
+            PermissionScreen(navController)
+        }
         composable(route = Screen.Home.route) {
             HomeScreen(navController = navController)
         }

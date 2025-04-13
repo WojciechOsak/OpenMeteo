@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">OpenMeteo</string>
+    <string name="permissions_not_granted">Location permissions are required to use the app</string>
+    <string name="retry">Retry</string>
+    <string name="open_app_settings">Open app settings</string>
+    <string name="open_app_settings_details">You need to grant location permissions in app settings</string>
+    <string name="open">Open</string>
 </resources>
