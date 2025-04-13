@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wojciechosak.openmeteo.R
+import com.wojciechosak.openmeteo.data.conditionText
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -58,9 +59,36 @@ fun DetailScreen(location: String, lat: Float, lon: Float) {
         uiState?.humidityPercentage?.let {
             Text(
                 "Humidity: %.2f".format(it),
-                fontSize = 52.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth(),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Light,
+                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+        uiState?.windSpeedKmPerHour?.let {
+            Text(
+                "Wind: %.2f km/h".format(it),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Light,
+                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+        uiState?.temperature?.let {
+            Text(
+                "Temp: %.2f°C".format(it),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Light,
+                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+        uiState?.conditions?.let {
+            Text(
+                conditionText(it),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Light,
+                modifier = Modifier.fillMaxWidth().padding(12.dp),
                 textAlign = TextAlign.Center
             )
         }

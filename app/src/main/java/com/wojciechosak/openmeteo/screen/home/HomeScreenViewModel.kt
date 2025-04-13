@@ -85,7 +85,7 @@ class HomeScreenViewModel(
                     modifyState { oldState ->
                         oldState.copy(
                             temperatureCelsius = responseValue.currentTemperatureCelsius,
-                            forecast = responseValue.dailyForecast?.map {
+                            forecast = responseValue.dailyForecast?.drop(1)?.map {
                                 DayForecast(
                                     conditions = it.weatherCode,
                                     date = it.time,

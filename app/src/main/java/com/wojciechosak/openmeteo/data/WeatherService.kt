@@ -9,7 +9,8 @@ interface WeatherService {
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("daily") daily: String = "temperature_2m_min,temperature_2m_max,weather_code",
-        @Query("current") current: String = "weather_code,temperature_2m"
+        @Query("current") current: String = "weather_code,temperature_2m",
+        @Query("forecast_days") forecastDays: Int = 6
     ): WeatherResponse
 
     @GET("forecast")

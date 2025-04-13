@@ -29,8 +29,7 @@ class DetailScreenViewModel(
 
     fun loadData(city: String, lat: Double, lon: Double) {
         viewModelScope.launch {
-            val result = weatherRepository.loadCityDetails(lat, lon)
-            when (result) {
+            when (val result = weatherRepository.loadCityDetails(lat, lon)) {
                 is ResultWrapper.GenericError -> {
                     // TODO handle errors
                 }
@@ -47,9 +46,7 @@ class DetailScreenViewModel(
                         windSpeedKmPerHour = result.value.windSpeedKmPerHour!!,
                         conditions = result.value.currentWeatherCode,
                         weatherIcon = weatherCodeToIcon(result.value.currentWeatherCode),
-                    ).also {
-                        println("@@@ XXXX $it")
-                    }
+                    )
                 }
             }
         }
