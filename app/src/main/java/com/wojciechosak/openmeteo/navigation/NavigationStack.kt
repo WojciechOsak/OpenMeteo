@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
@@ -33,15 +32,30 @@ fun NavigationStack() {
             HomeScreen(navController = navController)
         }
         composable(
-            route = Screen.Detail.route + "?text={text}",
+            route = Screen.Detail.route + "/{$LOCATION_ARG}/{$LAT_ARG}/{$LON_ARG}",
             arguments = listOf(
-                navArgument("text") {
+                navArgument(LOCATION_ARG) {
                     type = NavType.StringType
-                    nullable = true
+                    nullable = false
+                },
+                navArgument(LAT_ARG) {
+                    type = NavType.FloatType
+                    nullable = false
+                },
+                navArgument(LON_ARG) {
+                    type = NavType.FloatType
+                    nullable = false
                 }
             )
         ) {
-            DetailScreen(city = it.arguments?.getString("city"))
+            DetailScreen(
+                location = it.arguments?.getString(LOCATION_ARG)!!,
+                lat = it.arguments?.getFloat(LAT_ARG)!!,
+                lon = it.arguments?.getFloat(LON_ARG)!!
+            )
         }
     }
 }
+private const val LOCATION_ARG = "location"
+private const val LAT_ARG = "lat"
+private const val LON_ARG = "lon"

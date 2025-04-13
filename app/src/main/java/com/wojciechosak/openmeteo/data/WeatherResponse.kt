@@ -13,7 +13,7 @@ data class WeatherResponse(
     @SerializedName("current_units") var currentUnits: CurrentUnits,
     @SerializedName("current") var current: Current,
     @SerializedName("daily_units") var dailyUnits: DailyUnits,
-    @SerializedName("daily") var daily: Daily = Daily()
+    @SerializedName("daily") var daily: Daily? = Daily()
 )
 
 data class CurrentUnits(
@@ -28,6 +28,8 @@ data class Current(
     @SerializedName("interval") var interval: Int,
     @SerializedName("weather_code") var weatherCode: Int,
     @SerializedName("temperature_2m") var temperature2m: Double,
+    @SerializedName("wind_speed_10m")  val wind_speed_10m: Double,
+    @SerializedName("relative_humidity_2m")  val relative_humidity_2m: Int,
 )
 
 data class DailyUnits(

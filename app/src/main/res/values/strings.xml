@@ -18,4 +18,6 @@
     <string name="snow_showers">Snow showers</string>
     <string name="thunderstorm">Thunderstorm</string>
     <string name="thunderstorm_with_hail">Thunderstorm with hail</string>
+    <string name="enter_city">Enter City</string>
+    <string name="error_loading_data">Error loading data, try again!</string>
 </resources>

@@ -1,8 +1,10 @@
 package com.wojciechosak.openmeteo.domain
 
 data class WeatherDomain(
-    var currentTemperatureCelsius: Double,
-    var dailyForecast: List<DayForecast>,
+    val currentTemperatureCelsius: Double,
+    val humidity: Double?,
+    val windSpeedKmPerHour: Double?,
+    val dailyForecast: List<DayForecast>?,
     val currentWeatherCode: WeatherCode
 )
 

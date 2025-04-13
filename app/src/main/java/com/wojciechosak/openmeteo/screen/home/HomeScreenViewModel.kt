@@ -5,17 +5,26 @@ import android.location.Geocoder
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wojciechosak.openmeteo.R
+import com.wojciechosak.openmeteo.data.weatherCodeToIcon
+import com.wojciechosak.openmeteo.domain.ILocationRepository
 import com.wojciechosak.openmeteo.domain.IWeatherRepository
+import com.wojciechosak.openmeteo.domain.LocationDomain
 import com.wojciechosak.openmeteo.domain.WeatherCode
 import com.wojciechosak.openmeteo.network.ResultWrapper
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.Locale
 
+@OptIn(FlowPreview::class)
 class HomeScreenViewModel(
-    private val weatherRepository: IWeatherRepository
+    private val weatherRepository: IWeatherRepository,
+    private val locationRepository: ILocationRepository
 ) : ViewModel() {
 
     data class ViewState(
@@ -25,9 +34,9 @@ class HomeScreenViewModel(
         val conditions: WeatherCode? = null,
         @DrawableRes val conditionsIcon: Int? = null,
         val forecast: List<DayForecast>? = null,
-        val search: String? = null,
-        val searchResult: List<String>? = null,
-        val dataLoaded: Boolean = false
+        val searchResult: List<LocationDomain> = emptyList(),
+        val dataLoaded: Boolean = false,
+        val loadingError: Boolean = false
     )
 
     data class DayForecast(
@@ -39,6 +48,8 @@ class HomeScreenViewModel(
     )
 
     private val _state = MutableStateFlow(ViewState())
+    private val searchInput = MutableStateFlow("")
+
     val state: StateFlow<ViewState> = _state
 
     fun loadGeoName(context: Context, latLon: Pair<Double, Double>) {
@@ -62,13 +73,11 @@ class HomeScreenViewModel(
             val response = weatherRepository.loadWeatherData(lat, lon)
             when (response) {
                 is ResultWrapper.GenericError -> {
-                    // TODO handle generic error on UI
-                    modifyState { oldState -> oldState.copy(dataLoaded = false) }
+                    modifyState { oldState -> oldState.copy(dataLoaded = false, loadingError = true) }
                 }
 
                 ResultWrapper.NetworkError -> {
-                    // TODO handle network error on UI
-                    modifyState { oldState -> oldState.copy(dataLoaded = false) }
+                    modifyState { oldState -> oldState.copy(dataLoaded = false, loadingError = true) }
                 }
 
                 is ResultWrapper.Success -> {
@@ -76,7 +85,7 @@ class HomeScreenViewModel(
                     modifyState { oldState ->
                         oldState.copy(
                             temperatureCelsius = responseValue.currentTemperatureCelsius,
-                            forecast = responseValue.dailyForecast.map {
+                            forecast = responseValue.dailyForecast?.map {
                                 DayForecast(
                                     conditions = it.weatherCode,
                                     date = it.time,
@@ -95,24 +104,25 @@ class HomeScreenViewModel(
         }
     }
 
-    private fun weatherCodeToIcon(code: WeatherCode): Int {
-        return when (code) {
-            WeatherCode.CLEAR_SKY -> R.drawable.sun
-            WeatherCode.MAINLY_CLEAR_PARTLY_CLOUDY_OVERCAST -> R.drawable.cloudy
-            WeatherCode.FOG -> R.drawable.fog
-            WeatherCode.SNOWFALL,
-            WeatherCode.SNOW_SHOWERS,
-            WeatherCode.SNOW_GRAINS -> R.drawable.snow
+    init {
+        searchInput
+            .filter { it.isNotEmpty() }
+            .debounce(500L)
+            .onEach { city ->
+                val locations = locationRepository.searchLocation(city)
+                when (locations) {
+                    is ResultWrapper.GenericError -> TODO()
+                    ResultWrapper.NetworkError -> TODO()
+                    is ResultWrapper.Success -> {
+                        modifyState { oldState -> oldState.copy(searchResult = locations.value) }
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
 
-            WeatherCode.DRIZZLE,
-            WeatherCode.FREEZING_DRIZZLE,
-            WeatherCode.RAIN,
-            WeatherCode.FREEZING_RAIN,
-            WeatherCode.RAIN_SHOWERS -> R.drawable.rain
-
-            WeatherCode.THUNDERSTORM -> R.drawable.storm
-            WeatherCode.THUNDERSTORM_WITH_HAIL -> R.drawable.storm
-        }
+    fun citySearch(city: String) {
+        searchInput.value = city
     }
 
     private fun modifyState(modification: (ViewState) -> ViewState) {

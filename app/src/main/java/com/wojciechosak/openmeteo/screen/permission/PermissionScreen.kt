@@ -46,7 +46,9 @@ fun PermissionScreen(navController: NavController) {
         tryCounter = tryCounter
     )
     if (locationPermissionsGranted) {
-        navController.navigate(Screen.Home.route)
+        navController.navigate(Screen.Home.route) {
+            popUpTo(Screen.PermissionScreen.route) { inclusive = true }
+        }
     } else {
         Column(
             modifier = Modifier.fillMaxSize(),

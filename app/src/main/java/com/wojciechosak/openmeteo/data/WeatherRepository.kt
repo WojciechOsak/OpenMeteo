@@ -25,4 +25,18 @@ class WeatherRepository(
             }
         }
     }
+
+    override suspend fun loadCityDetails(lat: Double, lon: Double): ResultWrapper<WeatherDomain> {
+        val response = safeApiCall(dispatcher = dispatcherProvider.io) {
+            weatherService.getCityWeatherWithoutForecast(lat, lon)
+        }
+
+        return when (response) {
+            is ResultWrapper.GenericError -> response
+            is ResultWrapper.NetworkError -> response
+            is ResultWrapper.Success -> {
+                ResultWrapper.Success(responseMapper.map(response.value))
+            }
+        }
+    }
 }
