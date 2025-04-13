@@ -1,5 +1,6 @@
 package com.wojciechosak.openmeteo.di
 
+import com.wojciechosak.openmeteo.data.WeatherService
 import com.wojciechosak.openmeteo.di.ApiConfig.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -9,14 +10,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 private object ApiConfig {
     const val BASE_URL = "https://api.open-meteo.com/v1/"
-    const val FORECAST_ENDPOINT = "forecast?"
-    const val CURRENT_ENDPOINT = "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day"
-    const val FORECAST_DAYS = "forecast_days"
 }
 
 val networkModule = module {
     single { provideOkHttpClient() }
     single { provideRetrofit(get()) }
+    single { provideWeatherService(get()) }
+}
+
+private fun provideWeatherService(retrofit: Retrofit): WeatherService {
+    return retrofit.create(WeatherService::class.java)
 }
 
 private fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {

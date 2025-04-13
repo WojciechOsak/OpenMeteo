@@ -88,7 +88,7 @@ fun RequestLocationPermissionUsingRememberMultiplePermissionsState(
  *        If set to false, it uses balanced power accuracy.
  */
 @SuppressLint("MissingPermission")
-private fun getCurrentLocation(
+fun getCurrentUserLocation(
     context: Context,
     onGetCurrentLocationSuccess: (Pair<Double, Double>) -> Unit,
     onGetCurrentLocationFailed: (Exception) -> Unit,
